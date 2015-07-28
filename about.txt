@@ -1,0 +1,1 @@
+A rough port of parts of Pokemon Showdown's battle engine to Python for use in a Machine Learning AI project
