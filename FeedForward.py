@@ -155,6 +155,7 @@ def write_xml(hw, ow):
 #generate a bunch of random weights
 hidden_weights, output_weights  = initWeights(0,1,3, 5)
 write_xml(hidden_weights, output_weights)
+hidden_weights, output_weights = xmlWeights('data/weights.xml')
 
 
 
