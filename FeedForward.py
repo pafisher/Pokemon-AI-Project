@@ -2,6 +2,7 @@ import random
 import math
 import sys
 from xml.etree.ElementTree import ElementTree, Element, SubElement, tostring
+import xml.dom.minidom #for pretty printing the xml data
 
 
 def parse_csv(csvfile, mode):
@@ -78,36 +79,6 @@ def FeedForwardNN(examples, classifications, learning_rate, hidden_nodes, iterat
 def testNN(hidden_weights, output_weights, x, y):
 	return (sigmoid_to_int(sigmoid(vector_multiply(output_weights, [sigmoid(vector_multiply(w, x)) for w in hidden_weights]))) == y)
 
-#load a neural network based on the provided weights
-def loadNN(classifications, learning_rate, hidden_nodes, iterations, lower_weight_limit, upper_weight_limit):
-	W = [[random.uniform(lower_weight_limit, upper_weight_limit) for i in range(len(examples[0]))] for j in range(hidden_nodes)]
-	output_W = [random.uniform(lower_weight_limit, upper_weight_limit) for i in range(len(W))]
-
-	for i in range(iterations):
-		for count, e in enumerate(examples):
-			# forward phase
-			z = []
-			a = []
-			for w in W:
-				new_z = vector_multiply(w, e)
-				z.append(new_z)
-				a.append(sigmoid(new_z))
-			output_a = vector_multiply(output_W, z)
-			output_z = sigmoid(output_a)
-
-			# backward phase
-			output_d = sigmoidPrime(output_a) * (classifications[count] - sigmoid_to_int(output_z))
-			for index, w in enumerate(output_W):
-				output_W[index] = output_W[index] + (learning_rate * a[index] * output_d)
-			d = []
-			for index, w in enumerate(output_W):
-				d.append(sigmoidPrime(a[index]) * w * output_d)
-			for index, w in enumerate(W):
-				for j, weight in enumerate(w):
-					w[j] = w[j] + (learning_rate * e[j] * d[index])
-	return W, output_W
-
-
 
 #Try to parse weights file, if none exists create it
 #XML file used as easiest to understand and process
@@ -128,12 +99,21 @@ Weights will be stored in a graph like structure = G(v,e)
 </data>
 '''
 
+#create sum dummy weights for testing
+def initWeights(lower_weight_limit, upper_weight_limit, num_hidden, num_inputs):
+    hw = [[random.uniform(lower_weight_limit, upper_weight_limit) for i in range(num_inputs)] for j in range(num_hidden)]
+    ow = [random.uniform(lower_weight_limit, upper_weight_limit) for i in range(len(hw))]
+
+    print hw
+    print ''
+    print ow
+    return hw, ow
+
+
+    return  
+
 #load in the file tree
 #https://docs.python.org/2/library/xml.etree.elementtree.html
-def initWeights(lower_weight_limit, upper_weight_limit, num_inputs, num_hidden):
-    return  [[random.uniform(lower_weight_limit, upper_weight_limit) for i in range(num_inputs)] for j in range(num_hidden)]
-
-
 def parse_xml(xmlfile):
         tree = ElementTree.parse('data/weights.xml')
         root = tree.getroot()
@@ -145,21 +125,36 @@ def parse_xml(xmlfile):
 	return root
 
 #Writes a tree structure based on weights and XML
-def write_xml(weights):
+def write_xml(hw, ow):
+    fname = 'data/weights.xml'
     output_node = Element('output_node')
-    for hw in weights[0]:
+    print len(ow), len(hw[0])
+    for i in range(0, len(ow)):
         hidden_node = SubElement(output_node, "hidden_node")
-        hidden_node.text = str(hw)
+        SubElement(hidden_node, "weight").text = str(ow[i])
+        hidden_inputs = SubElement(hidden_node, "inputs")
+        for j in range(0, len(hw[0])):
+            input_node = SubElement(hidden_inputs, "input_node")
+            SubElement(input_node, "weight").text = str(str(hw[i][j]))
 
     #print tostring(output_node) 
     
+    #First we Write an XML tree using the 
+    #ElementTree module
     tree = ElementTree(output_node)
-    tree.write('data/test.xml')
+    tree.write(fname)
     
+    #As for someoen reason the write is on one line...
+    #we can print out a properly indented version of the code
+    #using the xml.dom.minidom stuff 
+    pretty = xml.dom.minidom.parse(fname)
+    pretty_xml_as_string = pretty.toprettyxml()
+    pretty_write = open(fname, 'w') #open with write only
+    pretty_write.write(pretty_xml_as_string)
 
 #generate a bunch of random weights
-weights = initWeights(0,1,30, 3)
-write_xml(weights)
+hidden_weights, output_weights  = initWeights(0,1,3, 5)
+write_xml(hidden_weights, output_weights)
 
 
 
