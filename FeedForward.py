@@ -1,6 +1,8 @@
 import random
 import math
 import sys
+from xml.etree.ElementTree import ElementTree, Element, SubElement, tostring
+
 
 def parse_csv(csvfile, mode):
 	f = open(csvfile, mode)
@@ -76,10 +78,92 @@ def FeedForwardNN(examples, classifications, learning_rate, hidden_nodes, iterat
 def testNN(hidden_weights, output_weights, x, y):
 	return (sigmoid_to_int(sigmoid(vector_multiply(output_weights, [sigmoid(vector_multiply(w, x)) for w in hidden_weights]))) == y)
 
+#load a neural network based on the provided weights
+def loadNN(classifications, learning_rate, hidden_nodes, iterations, lower_weight_limit, upper_weight_limit):
+	W = [[random.uniform(lower_weight_limit, upper_weight_limit) for i in range(len(examples[0]))] for j in range(hidden_nodes)]
+	output_W = [random.uniform(lower_weight_limit, upper_weight_limit) for i in range(len(W))]
+
+	for i in range(iterations):
+		for count, e in enumerate(examples):
+			# forward phase
+			z = []
+			a = []
+			for w in W:
+				new_z = vector_multiply(w, e)
+				z.append(new_z)
+				a.append(sigmoid(new_z))
+			output_a = vector_multiply(output_W, z)
+			output_z = sigmoid(output_a)
+
+			# backward phase
+			output_d = sigmoidPrime(output_a) * (classifications[count] - sigmoid_to_int(output_z))
+			for index, w in enumerate(output_W):
+				output_W[index] = output_W[index] + (learning_rate * a[index] * output_d)
+			d = []
+			for index, w in enumerate(output_W):
+				d.append(sigmoidPrime(a[index]) * w * output_d)
+			for index, w in enumerate(W):
+				for j, weight in enumerate(w):
+					w[j] = w[j] + (learning_rate * e[j] * d[index])
+	return W, output_W
+
 
 
 #Try to parse weights file, if none exists create it
-weights = parse_csv("data/weights.csv", 'w+')
+#XML file used as easiest to understand and process
+#although not the most space efficient 
+'''
+Weights will be stored in a graph like structure = G(v,e)
+<data>
+    <output_node>
+        <hidden_node weight=0.1>
+            <input_node weight=0.3/>
+            <input_node weight=0.3/>
+        <hidden_node/>
+    </output_node>
+    <output_node>
+        ...
+        ...
+    </output_node>
+</data>
+'''
+
+#load in the file tree
+#https://docs.python.org/2/library/xml.etree.elementtree.html
+def initWeights(lower_weight_limit, upper_weight_limit, num_inputs, num_hidden):
+    return  [[random.uniform(lower_weight_limit, upper_weight_limit) for i in range(num_inputs)] for j in range(num_hidden)]
+
+
+def parse_xml(xmlfile):
+        tree = ElementTree.parse('data/weights.xml')
+        root = tree.getroot()
+        for child in root:
+            print child.tag, child.attrib
+            for x in child:
+                print x.attrib
+
+	return root
+
+#Writes a tree structure based on weights and XML
+def write_xml(weights):
+    output_node = Element('output_node')
+    for hw in weights[0]:
+        hidden_node = SubElement(output_node, "hidden_node")
+        hidden_node.text = str(hw)
+
+    #print tostring(output_node) 
+    
+    tree = ElementTree(output_node)
+    tree.write('data/test.xml')
+    
+
+#generate a bunch of random weights
+weights = initWeights(0,1,30, 3)
+write_xml(weights)
+
+
+
+
 
 
 '''
