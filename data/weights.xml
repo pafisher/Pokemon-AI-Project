@@ -1,62 +1,62 @@
 <?xml version="1.0" ?>
 <output_node>
 	<hidden_node>
-		<weight>0.11765898715</weight>
+		<weight>0.584698069878</weight>
 		<inputs>
 			<input_node>
-				<weight>0.368147514476</weight>
+				<weight>0.179838621546</weight>
 			</input_node>
 			<input_node>
-				<weight>0.599069105519</weight>
+				<weight>0.0215514890427</weight>
 			</input_node>
 			<input_node>
-				<weight>0.631513404492</weight>
+				<weight>0.6381202787</weight>
 			</input_node>
 			<input_node>
-				<weight>0.433297386343</weight>
+				<weight>0.859982067195</weight>
 			</input_node>
 			<input_node>
-				<weight>0.0144924466624</weight>
+				<weight>0.236527880911</weight>
 			</input_node>
 		</inputs>
 	</hidden_node>
 	<hidden_node>
-		<weight>0.642256324867</weight>
+		<weight>0.100916589171</weight>
 		<inputs>
 			<input_node>
-				<weight>0.194447643259</weight>
+				<weight>0.893868339498</weight>
 			</input_node>
 			<input_node>
-				<weight>0.228893735657</weight>
+				<weight>0.167717644818</weight>
 			</input_node>
 			<input_node>
-				<weight>0.332059483108</weight>
+				<weight>0.496421388429</weight>
 			</input_node>
 			<input_node>
-				<weight>0.744434042395</weight>
+				<weight>0.892747347091</weight>
 			</input_node>
 			<input_node>
-				<weight>0.052524221469</weight>
+				<weight>0.355965743728</weight>
 			</input_node>
 		</inputs>
 	</hidden_node>
 	<hidden_node>
-		<weight>0.679837783369</weight>
+		<weight>0.385363521568</weight>
 		<inputs>
 			<input_node>
-				<weight>0.637139895643</weight>
+				<weight>0.748620828455</weight>
 			</input_node>
 			<input_node>
-				<weight>0.272992247403</weight>
+				<weight>0.949179265335</weight>
 			</input_node>
 			<input_node>
-				<weight>0.372739392811</weight>
+				<weight>0.00919200732524</weight>
 			</input_node>
 			<input_node>
-				<weight>0.31629463761</weight>
+				<weight>0.643775493684</weight>
 			</input_node>
 			<input_node>
-				<weight>0.941482072599</weight>
+				<weight>0.209654245678</weight>
 			</input_node>
 		</inputs>
 	</hidden_node>
